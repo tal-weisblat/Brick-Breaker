@@ -11,6 +11,7 @@ from classes import Paddle
 from classes import BrickList
 
 from utility import gameStatus_draw
+from utility import gameOver_draw
 
 # WINDOW 
 WIN_HEIGHT = 600  
@@ -22,8 +23,8 @@ pygame.init()
 
 
 # EVENT 
-BLOCKS_HIT = pygame.USEREVENT + 1
-
+BLOCKS_HIT_EVENT = pygame.USEREVENT + 1
+GAMEOVER_EVENT   = pygame.USEREVENT + 2
 
 
 # COLORS 
@@ -32,17 +33,15 @@ RED   = (255,0,0)
 BLUE  = (0,0,102)
      
 
-
 # SOUNDS 
 COLLISION_SOUND = pygame.mixer.Sound(os.path.join('files/sounds', 'tick.mp3'))
+GAMEOVER_SOUND = pygame.mixer.Sound(os.path.join('files/sounds', 'game_over.wav'))
 
 # IMAGES
 SCALE = 0.6
 BACKGROUNG_IMG = pygame.image.load(os.path.join('files/images', 'background_5.jpg'))
 BACKGROUNG_IMG = pygame.transform.scale(BACKGROUNG_IMG, (BACKGROUNG_IMG.get_width()*SCALE,(BACKGROUNG_IMG.get_height()*SCALE)) ) 
 BACKGROUNG_IMG.get_rect().topleft = (0,0)
-
-
 
 
 
@@ -54,7 +53,6 @@ PAD_COLOR  = BLUE
 PAD_POSITION = (WIN_WIDTH/2, WIN_HEIGHT - PAD_HEIGHT- 2)
 paddle = Paddle(PAD_POSITION, PAD_WIDTH, PAD_HEIGHT, PAD_VEL, PAD_COLOR)
 
-
 # BALL
 BALL_RADIUS   = 10 
 BALL_X_VEL    = 0
@@ -62,7 +60,6 @@ BALL_Y_VEL    = 10
 BALL_COLOR  = BLACK 
 BALL_POSITION = (WIN_WIDTH/2 - BALL_RADIUS, WIN_HEIGHT/2)
 ball = Ball(BALL_POSITION, BALL_RADIUS, BALL_X_VEL, BALL_Y_VEL, BALL_COLOR, PAD_WIDTH)
-
 
 # BRICKS 
 ROW_NUM = 3
@@ -75,10 +72,12 @@ brick_list = BrickList(ROW_NUM, COL_NUM, BRICK_WIDTH, BRICK_HEIGHT, BRICK_COLOR,
 
 
 
+         
 
 
 def game():
     
+    gameOver = False 
     block_hit_num = 0
     run = True                     
     clock = pygame.time.Clock()    
@@ -95,23 +94,31 @@ def game():
                 run = False 
                 break 
             
-            if event.type == BLOCKS_HIT:  block_hit_num += 1
-                
-                
+            if event.type == BLOCKS_HIT_EVENT:  
+                block_hit_num += 1
 
+            if event.type == GAMEOVER_EVENT: 
+                gameOver = True
+                GAMEOVER_SOUND.play()
+                
+                break
+                
+                
+        # game-over 
+        if gameOver:
+            gameOver_draw(gameOver) 
+            continue 
             
         # collisions 
         ball.collide_walls()  
         ball.collide_paddle(paddle)      
         brick_list.collide_ball(ball)
         
-
         # move 
         ball.move()
         paddle.move()
         
         # draw     
-        WIN.fill('white')
         WIN.blit(BACKGROUNG_IMG, BACKGROUNG_IMG.get_rect())
         ball.draw()
         paddle.draw()

@@ -1,8 +1,8 @@
 
-
-
 import pygame 
 import os
+
+
 
 # WINDOW 
 WIN_HEIGHT = 600  
@@ -17,7 +17,8 @@ COLLISION_SOUND = pygame.mixer.Sound(os.path.join('files/sounds', 'tick.mp3'))
 
 
 # EVENTS 
-BLOCKS_HIT = pygame.USEREVENT + 1
+BLOCKS_HIT_EVENT = pygame.USEREVENT + 1
+GAMEOVER_EVENT   = pygame.USEREVENT + 2
 
 
 
@@ -65,15 +66,19 @@ class Ball():
         self.circ_rect.x, self.circ_rect.y = self.x, self.y 
         
     def collide_walls(self): 
-        if self.y + self.radius >= WIN_HEIGHT: # button 
+        if self.y + self.radius >= WIN_HEIGHT: # hit buttom (game-over)
             self.y_vel = -self.y_vel 
+            pygame.event.post(pygame.event.Event(GAMEOVER_EVENT))
             COLLISION_SOUND.play()
+
         if self.x + self.radius >= WIN_WIDTH:  # right-wall 
             self.x_vel = -self.x_vel
             COLLISION_SOUND.play()
+
         if self.y - self.radius  <= 0:         # top 
             self.y_vel = -self.y_vel
             COLLISION_SOUND.play()
+            
         if self.x - self.radius <= 0 :         # left-wall 
             self.x_vel = -self.x_vel  
             COLLISION_SOUND.play()
@@ -140,7 +145,7 @@ class BrickList():
     def collide_ball(self,ball):
         for brick in self.list:
             if brick.colliderect(ball.circ_rect):
-                pygame.event.post(pygame.event.Event(BLOCKS_HIT))
+                pygame.event.post(pygame.event.Event(BLOCKS_HIT_EVENT))
                 COLLISION_SOUND.play()
                 self.list.remove(brick)
                 ball.y_vel = -ball.y_vel
