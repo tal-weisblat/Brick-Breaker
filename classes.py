@@ -2,6 +2,7 @@
 
 
 import pygame 
+import os
 
 # WINDOW 
 WIN_HEIGHT = 600  
@@ -9,6 +10,9 @@ WIN_WIDTH  = 700
 WIN = pygame.display.set_mode((WIN_WIDTH,WIN_HEIGHT))     
 pygame.display.set_caption('Bricks Breaker')                    
 pygame.init()
+
+
+COLLISION_SOUND = pygame.mixer.Sound(os.path.join('files/sounds', 'tick.mp3'))
 
 
 
@@ -36,6 +40,7 @@ class Ball():
     def collide_paddle(self, paddle):
         
         if paddle.rect.colliderect(self.circ_rect):
+            COLLISION_SOUND.play()
             self.y_vel = - self.y_vel
             diff = (self.circ_rect.x - paddle.rect.x)/PAD_WIDTH
             
@@ -56,12 +61,16 @@ class Ball():
     def collide_walls(self): 
         if self.y + self.radius >= WIN_HEIGHT: # button 
             self.y_vel = -self.y_vel 
+            COLLISION_SOUND.play()
         if self.x + self.radius >= WIN_WIDTH:  # right-wall 
             self.x_vel = -self.x_vel
+            COLLISION_SOUND.play()
         if self.y - self.radius  <= 0:         # top 
             self.y_vel = -self.y_vel
+            COLLISION_SOUND.play()
         if self.x - self.radius <= 0 :         # left-wall 
             self.x_vel = -self.x_vel  
+            COLLISION_SOUND.play()
         
         self.circ_rect.x, self.circ_rect.y = self.x, self.y 
 
@@ -99,7 +108,7 @@ class Paddle():
 
 # ----------------------------------------  BricjList -------------------------------------------------
 class BrickList():
-    def __init__(self, row_number, col_number, brick_width, brick_height, colors, gap):
+    def __init__(self, row_number, col_number, brick_width, brick_height, colors, lines_gap):
 
         self.list = [] 
         self.row_number = row_number
@@ -107,14 +116,15 @@ class BrickList():
         self.brick_width = brick_width 
         self.brick_height = brick_height
         self.colors = colors 
-        self.gap = gap 
+        self.lines_gap = lines_gap 
 
         same_row_bricks_gap = (WIN_WIDTH - (self.col_number * self.brick_width))/(self.col_number + 1) 
         for row in range(self.row_number):
             for col in range(self.col_number):
                 x =  (col+1)*same_row_bricks_gap +  col*self.brick_width + self.brick_width/2
-                y =  30
+                y =  (row+1)*self.lines_gap + row*self.brick_height + self.brick_height/2
                 brick = pygame.Rect(x ,y , self.brick_width, self.brick_height)
+                brick.center = (x,y)
                 self.list.append(brick)
 
     def draw(self):
@@ -124,6 +134,7 @@ class BrickList():
     def collide_ball(self,ball):
         for brick in self.list:
             if brick.colliderect(ball.circ_rect):
+                COLLISION_SOUND.play()
                 self.list.remove(brick)
                 ball.y_vel = -ball.y_vel
             

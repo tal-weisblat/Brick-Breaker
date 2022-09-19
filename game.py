@@ -18,7 +18,7 @@ RED   = (255,0,0)
 
 
 # SOUNDS 
-#COLLISION_SOUND = pygame.mixer.Sound(os.path.join('files/sounds', 'click_sound.mp3'))
+COLLISION_SOUND = pygame.mixer.Sound(os.path.join('files/sounds', 'tick.mp3'))
 
 
 # WINDOW 
@@ -39,7 +39,7 @@ ball = Ball(BALL_POSITION, BALL_RADIUS, BALL_X_VEL, BALL_Y_VEL, BALL_COLOR)
 
 
 # PADDLE 
-PAD_WIDTH  = 200
+PAD_WIDTH  = 140
 PAD_HEIGHT = 12
 PAD_VEL    = 7
 PAD_COLOR  = RED 
@@ -49,12 +49,12 @@ paddle = Paddle(PAD_POSITION, PAD_WIDTH, PAD_HEIGHT, PAD_VEL, RED)
 
 
 # BRICKS 
-ROW_NUM = 1 
-COL_NUM = 3
-BRICK_WIDTH  =  50
+ROW_NUM = 3
+COL_NUM = 9
+BRICK_WIDTH  =  70
 BRICK_HEIGHT =  30 
 BRICK_COLOR  = BLACK
-GAP = 30
+GAP = 20
 brick_list = BrickList(ROW_NUM, COL_NUM, BRICK_WIDTH, BRICK_HEIGHT, BRICK_COLOR, GAP) 
 
 
