@@ -32,7 +32,7 @@ class Ball():
         self.circ_rect.center = (self.x, self.y)
             
 
-    # BUG: 
+
     def collide_paddle(self, paddle):
         
         if paddle.rect.colliderect(self.circ_rect):
@@ -67,7 +67,6 @@ class Ball():
 
 
 
-
 # ----------------------------------------  PADDLE  -------------------------------------------------
 class Paddle():
 
@@ -89,10 +88,42 @@ class Paddle():
 
     def move(self):
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_RIGHT]:
+        if keys[pygame.K_RIGHT] and (self.x + self.width/2 <= WIN_WIDTH):
             self.x += self.velocity
             self.rect.x += self.velocity
-        if keys[pygame.K_LEFT]:
+        if keys[pygame.K_LEFT] and (self.x - self.width/2 >= 0):
             self.x -= self.velocity
             self.rect.x -= self.velocity
 
+
+
+# ----------------------------------------  BricjList -------------------------------------------------
+class BrickList():
+    def __init__(self, row_number, col_number, brick_width, brick_height, colors, gap):
+
+        self.list = [] 
+        self.row_number = row_number
+        self.col_number = col_number 
+        self.brick_width = brick_width 
+        self.brick_height = brick_height
+        self.colors = colors 
+        self.gap = gap 
+
+        same_row_bricks_gap = (WIN_WIDTH - (self.col_number * self.brick_width))/(self.col_number + 1) 
+        for row in range(self.row_number):
+            for col in range(self.col_number):
+                x =  (col+1)*same_row_bricks_gap +  col*self.brick_width + self.brick_width/2
+                y =  30
+                brick = pygame.Rect(x ,y , self.brick_width, self.brick_height)
+                self.list.append(brick)
+
+    def draw(self):
+        for brick in self.list:
+            pygame.draw.rect(WIN, self.colors, brick)
+
+    def collide_ball(self,ball):
+        for brick in self.list:
+            if brick.colliderect(ball.circ_rect):
+                self.list.remove(brick)
+                ball.y_vel = -ball.y_vel
+            
