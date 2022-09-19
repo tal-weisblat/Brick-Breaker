@@ -6,7 +6,7 @@ import os
 
 # WINDOW 
 WIN_HEIGHT = 600  
-WIN_WIDTH  = 700                                                
+WIN_WIDTH  = 1066                                                
 WIN = pygame.display.set_mode((WIN_WIDTH,WIN_HEIGHT))     
 pygame.display.set_caption('Bricks Breaker')                    
 pygame.init()

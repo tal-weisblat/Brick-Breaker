@@ -15,15 +15,23 @@ from classes import BrickList
 # COLORS 
 BLACK = (0,0,0)
 RED   = (255,0,0) 
+BLUE  = (0,0,102)
 
 
 # SOUNDS 
 COLLISION_SOUND = pygame.mixer.Sound(os.path.join('files/sounds', 'tick.mp3'))
 
 
+# IMAGES
+SCALE = 0.6
+BACKGROUNG_IMG = pygame.image.load(os.path.join('files/images', 'background_5.jpg'))
+BACKGROUNG_IMG = pygame.transform.scale(BACKGROUNG_IMG, (BACKGROUNG_IMG.get_width()*SCALE,(BACKGROUNG_IMG.get_height()*SCALE)) ) 
+BACKGROUNG_IMG.get_rect().topleft = (0,0)
+
+
 # WINDOW 
 WIN_HEIGHT = 600  
-WIN_WIDTH  = 700                                                
+WIN_WIDTH  = 1066                                                
 WIN = pygame.display.set_mode((WIN_WIDTH,WIN_HEIGHT))     
 pygame.display.set_caption('Bricks Breaker')                    
 pygame.init()
@@ -39,12 +47,12 @@ ball = Ball(BALL_POSITION, BALL_RADIUS, BALL_X_VEL, BALL_Y_VEL, BALL_COLOR)
 
 
 # PADDLE 
-PAD_WIDTH  = 140
-PAD_HEIGHT = 12
+PAD_WIDTH  = 135
+PAD_HEIGHT = 14
 PAD_VEL    = 7
-PAD_COLOR  = RED 
+PAD_COLOR  = BLUE  
 PAD_POSITION = (WIN_WIDTH/2, WIN_HEIGHT - PAD_HEIGHT- 2)
-paddle = Paddle(PAD_POSITION, PAD_WIDTH, PAD_HEIGHT, PAD_VEL, RED)
+paddle = Paddle(PAD_POSITION, PAD_WIDTH, PAD_HEIGHT, PAD_VEL, PAD_COLOR)
 
 
 
@@ -92,6 +100,7 @@ def game():
         
         # draw     
         WIN.fill('white')
+        WIN.blit(BACKGROUNG_IMG, BACKGROUNG_IMG.get_rect())
         ball.draw()
         paddle.draw()
         brick_list.draw()
