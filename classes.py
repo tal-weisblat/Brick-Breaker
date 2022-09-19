@@ -12,17 +12,22 @@ pygame.display.set_caption('Bricks Breaker')
 pygame.init()
 
 
+# SOUNDS
 COLLISION_SOUND = pygame.mixer.Sound(os.path.join('files/sounds', 'tick.mp3'))
 
 
+# EVENTS 
+BLOCKS_HIT = pygame.USEREVENT + 1
 
-# take out ... 
-PAD_WIDTH  = 200
+
+
+
+
 
 # ----------------------------------------  BALL  -------------------------------------------------
 class Ball():
 
-    def __init__(self, position, radius, x_vel, y_vel, color ):
+    def __init__(self, position, radius, x_vel, y_vel, color, pad_width):
         
         self.x = position[0]
         self.y = position[1]
@@ -30,6 +35,7 @@ class Ball():
         self.color    = color 
         self.x_vel = x_vel           
         self.y_vel = y_vel 
+        self.pad_width = pad_width
         
         # for collision with paddle 
         self.circ_rect = pygame.Rect(self.x, self.y, 2*self.radius, 2*self.radius) 
@@ -42,7 +48,7 @@ class Ball():
         if paddle.rect.colliderect(self.circ_rect):
             COLLISION_SOUND.play()
             self.y_vel = - self.y_vel
-            diff = (self.circ_rect.x - paddle.rect.x)/PAD_WIDTH
+            diff = (self.circ_rect.x - paddle.rect.x)/self.pad_width
             
             # BUG: not good enough ...  
             if diff >= 0.5:
@@ -106,7 +112,7 @@ class Paddle():
 
 
 
-# ----------------------------------------  BricjList -------------------------------------------------
+# ----------------------------------------  BrickList -------------------------------------------------
 class BrickList():
     def __init__(self, row_number, col_number, brick_width, brick_height, colors, lines_gap):
 
@@ -134,6 +140,7 @@ class BrickList():
     def collide_ball(self,ball):
         for brick in self.list:
             if brick.colliderect(ball.circ_rect):
+                pygame.event.post(pygame.event.Event(BLOCKS_HIT))
                 COLLISION_SOUND.play()
                 self.list.remove(brick)
                 ball.y_vel = -ball.y_vel
