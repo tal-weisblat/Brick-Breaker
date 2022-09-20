@@ -14,7 +14,7 @@ pygame.init()
 
 # SOUNDS
 COLLISION_SOUND = pygame.mixer.Sound(os.path.join('files/sounds', 'tick.mp3'))
-
+BULLETFIRED_SOUND = pygame.mixer.Sound(os.path.join('files/sounds','laser_shot.wav'))
 
 # EVENTS 
 BLOCKS_HIT_EVENT = pygame.USEREVENT + 1
@@ -146,3 +146,41 @@ class BrickList():
                 ball.y_vel = -ball.y_vel
 
             
+# ----------------------------------------  Bullets -------------------------------------------------
+
+class BulletList():
+
+    def __init__(self, velocity, color, bul_width, bul_height): 
+
+        self.list = []
+        self.velocity = velocity 
+        self.color = color 
+        self.width  = bul_width 
+        self.height = bul_height
+
+    def draw(self):
+        for bullet in self.list:
+            bullet.y -= self.velocity
+            pygame.draw.rect(WIN, self.color, bullet)
+
+    # bullet fired  
+    def bulletFired(self, keys, paddle, spaceBar_pressed):
+        if keys[pygame.K_SPACE] and (spaceBar_pressed == False) :
+            BULLETFIRED_SOUND.play()
+            spaceBar_pressed = True 
+            x = paddle.rect.x + paddle.width/2
+            y = paddle.rect.y 
+            bullet = pygame.Rect(x,y, self.width, self.height)
+            self.list.append(bullet)
+            return spaceBar_pressed
+
+
+    # bullet-brick collision 
+    def bulletCollideBrick(self, brick_list):
+        for bullet in self.list:
+            for brick in brick_list:
+                if bullet.colliderect(brick):
+                    # add sound ...
+                    brick_list.remove(brick)
+                    self.list.remove(bullet)
+
