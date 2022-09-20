@@ -92,27 +92,21 @@ class Paddle():
 
     def __init__ (self, position, width, height, velocity, color):
 
-        self.x = position[0]
-        self.y = position[1]
-        self.color = color 
         self.width = width 
         self.height = height 
+        self.rect = pygame.Rect(position[0], position[1], self.width, self.height)
+        self.color = color 
         self.velocity = velocity 
+        self.rect.topleft = (position[0], position[1])
         
-        # for collision with (the rect of) 'circle' 
-        self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
-        self.rect.center = (self.x, self.y)
-
     def draw(self):
         pygame.draw.rect(WIN, self.color, self.rect)
 
     def move(self):
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_RIGHT] and (self.x + self.width/2 <= WIN_WIDTH):
-            self.x += self.velocity
+        if keys[pygame.K_RIGHT] and (self.rect.x + self.width <= WIN_WIDTH):
             self.rect.x += self.velocity
-        if keys[pygame.K_LEFT] and (self.x - self.width/2 >= 0):
-            self.x -= self.velocity
+        if keys[pygame.K_LEFT] and (self.rect.x >= 0):
             self.rect.x -= self.velocity
 
 
@@ -128,7 +122,7 @@ class BrickList():
         self.brick_height = brick_height
         self.colors = colors 
         self.lines_gap = lines_gap 
-
+        
         same_row_bricks_gap = (WIN_WIDTH - (self.col_number * self.brick_width))/(self.col_number + 1) 
         for row in range(self.row_number):
             for col in range(self.col_number):
@@ -137,6 +131,7 @@ class BrickList():
                 brick = pygame.Rect(x ,y , self.brick_width, self.brick_height)
                 brick.center = (x,y)
                 self.list.append(brick)
+    
 
     def draw(self):
         for brick in self.list:
@@ -149,4 +144,5 @@ class BrickList():
                 COLLISION_SOUND.play()
                 self.list.remove(brick)
                 ball.y_vel = -ball.y_vel
+
             
