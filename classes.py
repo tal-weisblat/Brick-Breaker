@@ -16,7 +16,7 @@ pygame.init()
 # SOUNDS
 COLLISION_SOUND = pygame.mixer.Sound(os.path.join('files/sounds', 'tick.mp3'))
 BULLETFIRED_SOUND = pygame.mixer.Sound(os.path.join('files/sounds','laser_shot.wav'))
-
+PUDDLEGIFT_SOUND  = pygame.mixer.Sound(os.path.join('files/sounds', 'puddle_gift_collision.wav') )
 # EVENTS 
 BLOCKS_HIT_EVENT = pygame.USEREVENT + 1
 GAMEOVER_EVENT   = pygame.USEREVENT + 2
@@ -111,10 +111,11 @@ class Paddle():
         if keys[pygame.K_LEFT] and (self.rect.x >= 0):
             self.rect.x -= self.velocity
 
-    def collideGift(self, gift):
+    def collide_gift(self, gift):
         if gift != None: 
             if self.rect.colliderect(gift):                
                 pygame.event.post(pygame.event.Event(FIREBULLET_EVENT))
+                PUDDLEGIFT_SOUND.play()
                 
                 
 

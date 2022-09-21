@@ -139,7 +139,7 @@ def game():
         ball.collide_paddle(paddle)      
         bricks.collide_ball(ball)
         bricks.collide_bullet(bullets)
-        paddle.collideGift(bricks.fallingGift)
+        paddle.collide_gift(bricks.fallingGift)
 
 
         # bullet-fired 
