@@ -1,5 +1,6 @@
 
 import pygame 
+import time 
 import os
 
 
@@ -19,6 +20,7 @@ BULLETFIRED_SOUND = pygame.mixer.Sound(os.path.join('files/sounds','laser_shot.w
 # EVENTS 
 BLOCKS_HIT_EVENT = pygame.USEREVENT + 1
 GAMEOVER_EVENT   = pygame.USEREVENT + 2
+FIREBULLET_EVENT = pygame.USEREVENT + 4 
 
 
 
@@ -109,6 +111,15 @@ class Paddle():
         if keys[pygame.K_LEFT] and (self.rect.x >= 0):
             self.rect.x -= self.velocity
 
+    def collideGift(self, gift):
+        if gift != None: 
+            if self.rect.colliderect(gift):                
+                pygame.event.post(pygame.event.Event(FIREBULLET_EVENT))
+                
+                
+
+
+
 
 
 # ----------------------------------------  BrickList -------------------------------------------------
@@ -118,10 +129,14 @@ class BrickList():
         self.list = [] 
         self.row_number = row_number
         self.col_number = col_number 
+        self.size = self.row_number * self.col_number
         self.brick_width = brick_width 
         self.brick_height = brick_height
         self.colors = colors 
         self.lines_gap = lines_gap 
+
+        #self.giftList = []       # to enable paddle shooting 
+        self.fallingGift = None 
         
         same_row_bricks_gap = (WIN_WIDTH - (self.col_number * self.brick_width))/(self.col_number + 1) 
         for row in range(self.row_number):
@@ -131,6 +146,7 @@ class BrickList():
                 brick = pygame.Rect(x ,y , self.brick_width, self.brick_height)
                 brick.center = (x,y)
                 self.list.append(brick)
+
     
 
     def draw(self):
@@ -142,8 +158,38 @@ class BrickList():
             if brick.colliderect(ball.circ_rect):
                 pygame.event.post(pygame.event.Event(BLOCKS_HIT_EVENT))
                 COLLISION_SOUND.play()
+
+                # FALLING GIFT (for shooting)
+                if self.size - len(self.list) == 3:
+                    x =  brick.x + brick.width/2
+                    y =  brick.y 
+                    self.fallingGift = pygame.Rect(x ,y , 8, 8)                
+
                 self.list.remove(brick)
                 ball.y_vel = -ball.y_vel
+
+
+    def collide_bullet(self, bullets):
+        
+        for brick in self.list: 
+            for bullet in bullets.list:
+                if brick.colliderect(bullet):
+                    # add sound ...                    
+                    pygame.event.post(pygame.event.Event(BLOCKS_HIT_EVENT))
+                    self.list.remove(brick)
+                    bullets.list.remove(bullet)
+    
+
+    # VEL = 4    
+    def fallingGiftMove(self):
+        if self.fallingGift != None: 
+            self.fallingGift.y += 4
+
+    def fallingGiftDraw(self):
+        if self.fallingGift != None:
+            pygame.draw.rect(WIN, self.colors, self.fallingGift)
+                
+
 
             
 # ----------------------------------------  Bullets -------------------------------------------------
@@ -163,9 +209,9 @@ class BulletList():
             bullet.y -= self.velocity
             pygame.draw.rect(WIN, self.color, bullet)
 
-    # bullet fired  
-    def bulletFired(self, keys, paddle, spaceBar_pressed):
-        if keys[pygame.K_SPACE] and (spaceBar_pressed == False) :
+    # bullet fired  - limited time version (according to gift)
+    def bulletFired(self, keys, paddle, spaceBar_pressed, giftTime):
+        if keys[pygame.K_SPACE] and (spaceBar_pressed == False) and (time.time() - giftTime < 3):
             BULLETFIRED_SOUND.play()
             spaceBar_pressed = True 
             x = paddle.rect.x + paddle.width/2
@@ -176,11 +222,12 @@ class BulletList():
 
 
     # bullet-brick collision 
-    def bulletCollideBrick(self, brick_list):
+    def collideBrick(self, brick_list):
         for bullet in self.list:
             for brick in brick_list:
                 if bullet.colliderect(brick):
-                    # add sound ...
+                    # add sound ...                    
+                    pygame.event.post(pygame.event.Event(BLOCKS_HIT_EVENT))
                     brick_list.remove(brick)
                     self.list.remove(bullet)
 

@@ -2,6 +2,7 @@
 
 
 import pygame 
+import time 
 import os
 pygame.init()
 
@@ -27,6 +28,7 @@ pygame.init()
 BLOCKS_HIT_EVENT = pygame.USEREVENT + 1
 GAMEOVER_EVENT   = pygame.USEREVENT + 2
 NEWGAME_EVENT    = pygame.USEREVENT + 3  
+FIREBULLET_EVENT = pygame.USEREVENT + 4 
 
 
 # COLORS 
@@ -82,41 +84,14 @@ BULLET_HEIGHT = 5
 
 
 
-
-# DRAW 
-# def bullets_draw():
-#     for bullet in bullet_list:
-#         bullet.y -= BULLET_VEL
-#         pygame.draw.rect(WIN, BULLET_COLOR, bullet)
-
-# # FIRE 
-# def fireBullet(bullet_list, x,y):
-#     BULLETFIRED_SOUND.play()
-#     bullet = pygame.Rect(x,y, BULLET_WIDTH, BULLET_HEIGHT)
-#     bullet_list.append(bullet)
-
-# # COLLISON 
-# def bulletCollideBrick(brick_list):
-    
-#     for bullet in bullet_list:
-#         for brick in brick_list:
-#             if bullet.colliderect(brick):
-#                 # add sound ...
-#                 brick_list.remove(brick)
-#                 bullet_list.remove(bullet)
-
-
-
-
-
 def game():
     
-    paddle      = Paddle(PAD_POSITION, PAD_WIDTH, PAD_HEIGHT, PAD_VEL, PAD_COLOR)
-    ball        = Ball(BALL_POSITION, BALL_RADIUS, BALL_X_VEL, BALL_Y_VEL, BALL_COLOR, PAD_WIDTH)
-    brick_list  = BrickList(ROW_NUM, COL_NUM, BRICK_WIDTH, BRICK_HEIGHT, BRICK_COLOR, GAP) 
-    bullet_list = BulletList(BULLET_VEL, BULLET_COLOR, BULLET_WIDTH, BULLET_HEIGHT)
+    paddle  = Paddle(PAD_POSITION, PAD_WIDTH, PAD_HEIGHT, PAD_VEL, PAD_COLOR)
+    ball    = Ball(BALL_POSITION, BALL_RADIUS, BALL_X_VEL, BALL_Y_VEL, BALL_COLOR, PAD_WIDTH)
+    bricks  = BrickList(ROW_NUM, COL_NUM, BRICK_WIDTH, BRICK_HEIGHT, BRICK_COLOR, GAP) 
+    bullets = BulletList(BULLET_VEL, BULLET_COLOR, BULLET_WIDTH, BULLET_HEIGHT)
 
-
+    giftTime = 0
     spaceBar_pressed = False 
 
     gameOver = False 
@@ -147,6 +122,11 @@ def game():
                 game()
                 break
                 
+            if event.type == FIREBULLET_EVENT:
+                giftTime = time.time()
+                
+
+
                 
         # game-over 
         if gameOver:
@@ -154,28 +134,33 @@ def game():
             continue 
             
             
-        # bullet-fired 
-        keys = pygame.key.get_pressed()
-        spaceBar_pressed = bullet_list.bulletFired(keys, paddle, spaceBar_pressed) 
-        if not keys[pygame.K_SPACE]: spaceBar_pressed = False 
-    
-
         # collisions 
         ball.collide_walls()  
         ball.collide_paddle(paddle)      
-        brick_list.collide_ball(ball)
-        bullet_list.bulletCollideBrick(brick_list.list)
+        bricks.collide_ball(ball)
+        bricks.collide_bullet(bullets)
+        paddle.collideGift(bricks.fallingGift)
+
+
+        # bullet-fired 
+        keys = pygame.key.get_pressed()
+        spaceBar_pressed = bullets.bulletFired(keys, paddle, spaceBar_pressed, giftTime) 
+        if not keys[pygame.K_SPACE]: spaceBar_pressed = False 
+    
         
         # move 
         ball.move()
         paddle.move()
+        bricks.fallingGiftMove()
+        
         
         # draw     
         WIN.blit(BACKGROUNG_IMG, BACKGROUNG_IMG.get_rect()) 
-        bullet_list.draw()
+        bricks.fallingGiftDraw()
+        bullets.draw()
         ball.draw()
         paddle.draw()
-        brick_list.draw()
+        bricks.draw()
         gameStatus_draw(block_hit_num)
         pygame.display.update()
 
