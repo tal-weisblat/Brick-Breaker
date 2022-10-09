@@ -1,23 +1,5 @@
 
-
-import pygame 
-import os 
-
-# WINDOW 
-WIN_HEIGHT = 600  
-WIN_WIDTH  = 1066                                                
-WIN = pygame.display.set_mode((WIN_WIDTH,WIN_HEIGHT))     
-pygame.display.set_caption('Bricks Breaker')                    
-pygame.init()
-
-
-# COLORS 
-BLUE  = (0,0,102)
-
-
-# EVENTS 
-NEWGAME_EVENT    = pygame.USEREVENT + 3  
-
+from gameSetting import * 
 
 
 
@@ -31,15 +13,8 @@ def gameStatus_draw(block_hit_num):
     WIN.blit(blocks_text, (x,y))
 
 
-
-
-# GAME-OVER 
-SCALE = 0.6
-BACKGROUNG_IMG = pygame.image.load(os.path.join('files/images', 'background_5.jpg'))
-BACKGROUNG_IMG = pygame.transform.scale(BACKGROUNG_IMG, (BACKGROUNG_IMG.get_width()*SCALE,(BACKGROUNG_IMG.get_height()*SCALE)) ) 
-BACKGROUNG_IMG.get_rect().topleft = (0,0)
-
 def gameOver_draw(gameOver):
+    
     if gameOver: 
         
         # game-over
@@ -52,7 +27,7 @@ def gameOver_draw(gameOver):
         gameOver_x = WIN_WIDTH/2 - gameOver_width/2
         gameOver_y = WIN_HEIGHT/2 - gameOver_heigth/2
         
-        # New game ?  
+        # New game 
         newGame_text = GAMEOVER_FONT.render('New game ?',1, color)
         newGame_width  = gameOver_text.get_width()
         newgame_height = gameOver_text.get_height()
