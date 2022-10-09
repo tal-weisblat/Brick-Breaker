@@ -1,22 +1,10 @@
 
-from gameSetting import * 
+from gameSetting import *
 
 
 
-def gameStatus_draw(block_hit_num):
-    x = 10
-    y = WIN_HEIGHT/2
-    color = BLUE 
-    phont_size = 20
-    BLOCKS_FONT = pygame.font.SysFont('comicsans', phont_size)
-    blocks_text = BLOCKS_FONT.render('Blocks: ' + str(block_hit_num),1, color)
-    WIN.blit(blocks_text, (x,y))
-
-
-def gameOver_draw(gameOver):
-    
-    if gameOver: 
-        
+def drawGameOver(gameOver):    
+    if gameOver:     
         # game-over
         phont_size = 50 
         color = BLUE

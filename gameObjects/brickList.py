@@ -1,9 +1,8 @@
 
-
 from gameSetting import *
 
-
                 
+
 # ----------------------------------------  BrickList -------------------------------------------------
 class BrickList():
     def __init__(self, row_number, col_number, brick_width, brick_height, colors, lines_gap):
@@ -28,8 +27,6 @@ class BrickList():
                 brick = pygame.Rect(x ,y , self.brick_width, self.brick_height)
                 brick.center = (x,y)
                 self.list.append(brick)
-
-    
 
     def draw(self):
         for brick in self.list:
@@ -61,7 +58,6 @@ class BrickList():
                     self.list.remove(brick)
                     bullets.list.remove(bullet)
     
-
     # VEL = 4    
     def fallingGiftMove(self):
         if self.fallingGift != None: 
@@ -73,63 +69,3 @@ class BrickList():
                 
 
 
-            
-# ----------------------------------------  Bullets -------------------------------------------------
-
-class BulletList():
-
-    def __init__(self, velocity, color, bul_width, bul_height): 
-
-        self.list = []
-        self.velocity = velocity 
-        self.color = color 
-        self.width  = bul_width 
-        self.height = bul_height
-
-    def draw(self):
-        for bullet in self.list:
-            bullet.y -= self.velocity
-            pygame.draw.rect(WIN, self.color, bullet)
-
-    # bullet fired  - limited time version (according to gift)
-    def bulletFired(self, keys, paddle, spaceBar_pressed, giftTime):
-        if keys[pygame.K_SPACE] and (spaceBar_pressed == False) and (time.time() - giftTime < 3):
-            BULLETFIRED_SOUND.play()
-            spaceBar_pressed = True 
-            x = paddle.rect.x + paddle.width/2
-            y = paddle.rect.y 
-            bullet = pygame.Rect(x,y, self.width, self.height)
-            self.list.append(bullet)
-            return spaceBar_pressed
-
-
-    # bullet-brick collision 
-    def collideBrick(self, brick_list):
-        for bullet in self.list:
-            for brick in brick_list:
-                if bullet.colliderect(brick):
-                    # add sound ...                    
-                    pygame.event.post(pygame.event.Event(BLOCKS_HIT_EVENT))
-                    brick_list.remove(brick)
-                    self.list.remove(bullet)
-
-
-
-
-
-# # WINDOW 
-# WIN_HEIGHT = 600  
-# WIN_WIDTH  = 1066                                                
-# WIN = pygame.display.set_mode((WIN_WIDTH,WIN_HEIGHT))     
-# pygame.display.set_caption('Bricks Breaker')                    
-# pygame.init()
-
-# # SOUNDS
-# COLLISION_SOUND = pygame.mixer.Sound(os.path.join('files/sounds', 'tick.mp3'))
-# BULLETFIRED_SOUND = pygame.mixer.Sound(os.path.join('files/sounds','laser_shot.wav'))
-# PUDDLEGIFT_SOUND  = pygame.mixer.Sound(os.path.join('files/sounds', 'puddle_gift_collision.wav') )
-
-# # EVENTS 
-# BLOCKS_HIT_EVENT = pygame.USEREVENT + 1
-# GAMEOVER_EVENT   = pygame.USEREVENT + 2
-# FIREBULLET_EVENT = pygame.USEREVENT + 4 

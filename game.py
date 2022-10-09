@@ -3,22 +3,11 @@ from gameSetting import *
 
 from gameObjects.ball   import Ball
 from gameObjects.paddle import Paddle
-from gameObjects.classes import BrickList
-from gameObjects.classes import BulletList
-from utility import gameStatus_draw
-from utility import gameOver_draw
+from gameObjects.brickList import BrickList
+from gameObjects.bulletList import BulletList
+from gameDraw.drawGame import drawGame, drawGameStatus
+from gameDraw.drawGameOver import drawGameOver
 
-
-
-def draw(bricks,bullets,ball,paddle,block_hit_num):
-    WIN.blit(BACKGROUNG_IMG, BACKGROUNG_IMG.get_rect()) 
-    bricks.fallingGiftDraw()
-    bullets.draw()
-    ball.draw()
-    paddle.draw()
-    bricks.draw()
-    gameStatus_draw(block_hit_num)
-    pygame.display.update()
 
 
 def game():
@@ -30,7 +19,6 @@ def game():
 
     giftTime = 0
     spaceBar_pressed = False 
-
     gameOver = False 
     block_hit_num = 0
     run = True                     
@@ -65,7 +53,7 @@ def game():
     
         # game-over 
         if gameOver:
-            gameOver_draw(gameOver) 
+            drawGameOver(gameOver) 
             continue 
             
         # collisions 
@@ -86,7 +74,7 @@ def game():
         bricks.fallingGiftMove()
         
         # draw     
-        draw(bricks,bullets,ball,paddle,block_hit_num)
+        drawGame(bricks,bullets,ball,paddle,block_hit_num)
 
     pygame.quit()
 
