@@ -69,13 +69,13 @@ FIREBULLET_EVENT = pygame.USEREVENT + 4
 
 # IMAGES
 SCALE = 0.6
-BACKGROUNG_IMG = pygame.image.load(os.path.join('imageFiles', 'background_5.jpg'))
+BACKGROUNG_IMG = pygame.image.load(os.path.join('imageFiles', 'background.jpg'))
 BACKGROUNG_IMG = pygame.transform.scale(BACKGROUNG_IMG, (BACKGROUNG_IMG.get_width()*SCALE,(BACKGROUNG_IMG.get_height()*SCALE)) ) 
 BACKGROUNG_IMG.get_rect().topleft = (0,0)
 
 
 # GAME-OVER 
 SCALE = 0.6
-BACKGROUNG_IMG = pygame.image.load(os.path.join('imageFiles', 'background_5.jpg'))
+BACKGROUNG_IMG = pygame.image.load(os.path.join('imageFiles', 'background.jpg'))
 BACKGROUNG_IMG = pygame.transform.scale(BACKGROUNG_IMG, (BACKGROUNG_IMG.get_width()*SCALE,(BACKGROUNG_IMG.get_height()*SCALE)) ) 
 BACKGROUNG_IMG.get_rect().topleft = (0,0)
