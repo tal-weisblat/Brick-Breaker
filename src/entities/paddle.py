@@ -1,5 +1,5 @@
 
-from gameSetting import *
+from game_setting import *
 
 
 # ----------------------------------------  PADDLE  -------------------------------------------------

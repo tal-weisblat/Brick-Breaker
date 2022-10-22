@@ -1,22 +1,20 @@
 
-from gameSetting import *
+from game_setting import *
 
-from gameObjects.ball   import Ball
-from gameObjects.paddle import Paddle
-from gameObjects.brickList import BrickList
-from gameObjects.bulletList import BulletList
-from gameDraw.drawGame import drawGame, drawGameStatus
-from gameDraw.drawGameOver import drawGameOver
+from src.entities.ball   import Ball
+from src.entities.paddle import Paddle
+from src.entities.brick_list import BrickList
+from src.entities.bullet_list import BulletList
+from src.gui.draw_game import draw_game, draw_game_over 
 
 
 
 def game():
-    
+
     paddle  = Paddle(PAD_POSITION, PAD_WIDTH, PAD_HEIGHT, PAD_VEL, PAD_COLOR)
     ball    = Ball(BALL_POSITION, BALL_RADIUS, BALL_X_VEL, BALL_Y_VEL, BALL_COLOR, PAD_WIDTH)
     bricks  = BrickList(ROW_NUM, COL_NUM, BRICK_WIDTH, BRICK_HEIGHT, BRICK_COLOR, GAP) 
     bullets = BulletList(BULLET_VEL, BULLET_COLOR, BULLET_WIDTH, BULLET_HEIGHT)
-
     giftTime = 0
     spaceBar_pressed = False 
     gameOver = False 
@@ -25,7 +23,6 @@ def game():
     clock = pygame.time.Clock()    
     fps = 60                                          
     
-
     while run:
 
         clock.tick(fps)   
@@ -53,10 +50,10 @@ def game():
     
         # game-over 
         if gameOver:
-            drawGameOver(gameOver) 
+            draw_game_over(gameOver) 
             continue 
             
-        # collisions 
+        # collision
         ball.collide_walls()  
         ball.collide_paddle(paddle)      
         bricks.collide_ball(ball)
@@ -65,19 +62,18 @@ def game():
 
         # bullet-fired 
         keys = pygame.key.get_pressed()
-        spaceBar_pressed = bullets.bulletFired(keys, paddle, spaceBar_pressed, giftTime) 
+        spaceBar_pressed = bullets.bullet_fired(keys, paddle, spaceBar_pressed, giftTime) 
         if not keys[pygame.K_SPACE]: spaceBar_pressed = False 
     
         # move 
         ball.move()
         paddle.move()
-        bricks.fallingGiftMove()
+        bricks.falling_gift_move()
         
         # draw     
-        drawGame(bricks,bullets,ball,paddle,block_hit_num)
+        draw_game(bricks,bullets,ball,paddle,block_hit_num)
 
     pygame.quit()
-
 
 game()
 

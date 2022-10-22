@@ -1,5 +1,5 @@
 
-from gameSetting import *
+from game_setting import *
 
 
 # ----------------------------------------  BALL  -------------------------------------------------
@@ -45,15 +45,12 @@ class Ball():
             self.y_vel = -self.y_vel 
             pygame.event.post(pygame.event.Event(GAMEOVER_EVENT))
             COLLISION_SOUND.play()
-
         if self.x + self.radius >= WIN_WIDTH:  # right-wall 
             self.x_vel = -self.x_vel
             COLLISION_SOUND.play()
-
         if self.y - self.radius  <= 0:         # top 
             self.y_vel = -self.y_vel
             COLLISION_SOUND.play()
-            
         if self.x - self.radius <= 0 :         # left-wall 
             self.x_vel = -self.x_vel  
             COLLISION_SOUND.play()

@@ -1,5 +1,5 @@
 
-from gameSetting import *
+from game_setting import *
 
                 
 
@@ -15,8 +15,6 @@ class BrickList():
         self.brick_height = brick_height
         self.colors = colors 
         self.lines_gap = lines_gap 
-
-        #self.giftList = []       # to enable paddle shooting 
         self.fallingGift = None 
         
         same_row_bricks_gap = (WIN_WIDTH - (self.col_number * self.brick_width))/(self.col_number + 1) 
@@ -38,7 +36,7 @@ class BrickList():
                 pygame.event.post(pygame.event.Event(BLOCKS_HIT_EVENT))
                 COLLISION_SOUND.play()
 
-                # FALLING GIFT (for shooting)
+                # falling gift (for shooting)
                 if self.size - len(self.list) == 3:
                     x =  brick.x + brick.width/2
                     y =  brick.y 
@@ -47,23 +45,19 @@ class BrickList():
                 self.list.remove(brick)
                 ball.y_vel = -ball.y_vel
 
-
     def collide_bullet(self, bullets):
-        
         for brick in self.list: 
             for bullet in bullets.list:
-                if brick.colliderect(bullet):
-                    # add sound ...                    
+                if brick.colliderect(bullet):                
                     pygame.event.post(pygame.event.Event(BLOCKS_HIT_EVENT))
                     self.list.remove(brick)
                     bullets.list.remove(bullet)
     
-    # VEL = 4    
-    def fallingGiftMove(self):
+    def falling_gift_move(self):
         if self.fallingGift != None: 
-            self.fallingGift.y += 4
+            self.fallingGift.y += 4      # VEL = 4    
 
-    def fallingGiftDraw(self):
+    def falling_gift_draw(self):
         if self.fallingGift != None:
             pygame.draw.rect(WIN, self.colors, self.fallingGift)
                 

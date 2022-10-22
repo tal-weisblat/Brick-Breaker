@@ -1,11 +1,32 @@
 
-from gameSetting import *
 
+from game_setting import *
 
+# ------------------------------------------ STATUS -----------------------------------------------
+def draw_game_status(block_hit_num):
+    x = 10
+    y = WIN_HEIGHT/2
+    color = BLUE 
+    phont_size = 20
+    BLOCKS_FONT = pygame.font.SysFont('comicsans', phont_size)
+    blocks_text = BLOCKS_FONT.render('Blocks: ' + str(block_hit_num),1, color)
+    WIN.blit(blocks_text, (x,y))
 
-def drawGameOver(gameOver):    
+# ------------------------------------------ GAME -----------------------------------------------
+def draw_game(bricks,bullets,ball,paddle,block_hit_num):
+    WIN.blit(BACKGROUNG_IMG, BACKGROUNG_IMG.get_rect()) 
+    bricks.falling_gift_draw()
+    bullets.draw()
+    ball.draw()
+    paddle.draw()
+    bricks.draw()
+    draw_game_status(block_hit_num)
+    pygame.display.update()
+
+# ------------------------------------------ GAME-OVER -----------------------------------------------
+def draw_game_over(gameOver):    
+    # game-over
     if gameOver:     
-        # game-over
         phont_size = 50 
         color = BLUE
         GAMEOVER_FONT = pygame.font.SysFont('comicsans', phont_size)
@@ -26,15 +47,12 @@ def drawGameOver(gameOver):
         yes_text = GAMEOVER_FONT.render('yes',1, color)
         yes_x = WIN_WIDTH/2 - yes_text.get_width()/2
         yes_y = WIN_HEIGHT/2 + gameOver_heigth/2 + newgame_height + 20
-        
         yes_rect = yes_text.get_rect()
         yes_rect.topleft = (yes_x,yes_y)
-
 
         pos = pygame.mouse.get_pos()
         if yes_rect.collidepoint(pos) and (pygame.mouse.get_pressed()[0] == 1):
             pygame.event.post(pygame.event.Event(NEWGAME_EVENT))
-
 
         # draw 
         WIN.blit(BACKGROUNG_IMG, BACKGROUNG_IMG.get_rect())
