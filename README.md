@@ -1,6 +1,6 @@
 # Break-Breaker
 
-![break-breaker game](imageFiles/game_demo.gif)
+![break-breaker game](resources/images/game_demo.gif)
 
 
 # Instructions 
